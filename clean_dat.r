@@ -121,6 +121,17 @@ data$caus_signal_3 <- factor(ifelse(grepl("Study estimated an effect of an expos
 var_label(data$caus_signal_3) <- "Effect was estimated using a linear regression model with adjustment for a set of covariates"
 summary(data$caus_signal_3)
 
+# Check studies that did not use linear regression with adjustment for a set of covariates
+data[which(data$caus_signal_3 == "No"), c("cov_ID", "study_ID")]
+
+# 20: Marginal structural model - adjusted for time-varying covariates
+# 202: Cox proportional hazards model + weighted marginal structural model - adjusted for baseline covariates
+# 296: Structural equation modelling
+# Except 296 (which made a causal conclusion), all studies used linear regression 
+# (or a more sophisticated approach) with adjustment for a set of covariates.
+data$caus_signal_3[data$cov_ID %in% 20] <- "Yes"
+data$caus_signal_3[data$cov_ID %in% 202] <- "Yes"
+
 ## design ----
 data$design_details <- ifelse(grepl("Other", data$design), data$design, NA)
 data$design_fct <- factor(ifelse(grepl("Other", data$design), "Other", data$design),
