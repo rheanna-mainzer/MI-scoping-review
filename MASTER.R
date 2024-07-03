@@ -27,5 +27,5 @@ source(here("clean_dat.R"))
 source(here("tables_for_paper.R"))
 
 # Create Figure 2
-source(here("figuress_for_paper.R"))
+source(here("figures_for_paper.R"))
 
