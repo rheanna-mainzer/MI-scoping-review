@@ -14,7 +14,7 @@ load("data_clean.R")
 
 # Summarise data using gtsummary package
 fig2_dat <- data[, c(
-  "cov_ID", "complete_p_estab", "complete_p_ub",
+  "cov_ID", "study_ID", "complete_p_estab", "complete_p_ub",
   "exposure_miss_p_estab", "exposure_miss_p_lb",
   "outcome_miss_p_estab", "outcome_miss_p_lb"
 )]
@@ -25,13 +25,14 @@ fig2a_dat <- pivot_longer(fig2_dat,
   names_to = "complete_p", values_to = "p"
 )
 fig2a_dat$complete_p <- factor(fig2a_dat$complete_p)
-levels(fig2a_dat$complete_p) <- c("Able to establish %", "Upper bound on %")
+levels(fig2a_dat$complete_p) <- c("Studies where able to establish", 
+                                  "Studies where upper bound available")
 
 fig2a <- ggplot(fig2a_dat, aes(x = positional, y = p)) +
   geom_dotplot(aes(x = "1"), binaxis = "y", stackdir = "center", binwidth = 3, dotsize = 0.8) +
   geom_boxplot(aes(x = "2"), width = 0.5) +
   facet_wrap(~complete_p, strip.position = "bottom") +
-  labs(y = "%") +
+  labs(y = "% of studies") +
   theme_bw() +
   theme(
     panel.spacing.x = unit(0, "npc"),
@@ -49,13 +50,15 @@ fig2b_dat <- pivot_longer(fig2_dat,
   names_to = "exposure_miss", values_to = "p"
 )
 fig2b_dat$exposure_miss <- factor(fig2b_dat$exposure_miss)
-levels(fig2b_dat$exposure_miss) <- c("Able to establish %", "Lower bound on %")
+levels(fig2b_dat$exposure_miss) <- c("Studies where able to establish", 
+                                     "Studies where lower bound available")
 
 fig2b <- ggplot(fig2b_dat, aes(x = positional, y = p)) +
   geom_dotplot(aes(x = "1"), binaxis = "y", stackdir = "center") +
   geom_boxplot(aes(x = "2"), width = 0.5) +
   facet_wrap(~exposure_miss, strip.position = "bottom") +
-  labs(y = "%") +
+  labs(y = "% of studies") +
+  ylim(0, 100) +
   theme_bw() +
   theme(
     panel.spacing.x = unit(0, "npc"),
@@ -73,13 +76,14 @@ fig2c_dat <- pivot_longer(fig2_dat,
   names_to = "outcome_miss", values_to = "p"
 )
 fig2c_dat$outcome_miss <- factor(fig2c_dat$outcome_miss)
-levels(fig2c_dat$outcome_miss) <- c("Able to establish %", "Lower bound on %")
+levels(fig2c_dat$outcome_miss) <- c("Studies where able to establish", 
+                                    "Studies where lower bound available")
 
 fig2c <- ggplot(fig2c_dat, aes(outcome_miss, p)) +
   geom_dotplot(aes(x = "1"), binaxis = "y", stackdir = "center") +
   geom_boxplot(aes(x = "2"), width = 0.5) +
   facet_wrap(~outcome_miss, strip.position = "bottom") +
-  labs(y = "%") +
+  labs(y = "% of studies") +
   ylim(0, 100) +
   theme_bw() +
   theme(

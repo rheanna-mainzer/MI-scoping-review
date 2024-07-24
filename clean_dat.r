@@ -339,6 +339,85 @@ data$complete_p <- gsub("%", "", data$complete_p)
 data$complete_p <- gsub("\n", "", data$complete_p)
 data$complete_p <- as.numeric(data$complete_p)
 
+# Double check strange complete_p
+
+sort(data$complete_p)
+
+# 101 Gerlovin 2021 
+data[which(data$study_ID == "Gerlovin 2021"), 
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# Missing data in lab variables, but "were fed into PS model using indicator
+# of collection". Assume "missing" = "no indication of collection".
+# Smoking status missing for 537/1769 (30%)
+# Revise upper bound on percentage of complete cases to 70%
+# (At most 70% of cases had complete data for all analysis variables)
+data[which(data$study_ID == "Gerlovin 2021"),
+     "complete_p"] <- 70
+
+# 156 Kerschberger 2021
+data[which(data$study_ID == "Kerschberger 2021"), 
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# Hemoglobin missing for 320/1328 (24%) of cases.
+# Revise upper bound on percentage of complete cases to 76%
+# (At most 76% of cases had complete data for all analysis variables)
+data[which(data$study_ID == "Kerschberger 2021"),
+     "complete_p"] <- 76
+
+# 185 Magnus 2021  
+data[which(data$study_ID == "Magnus 2021"), 
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# Analysis sample size = 50533 (male population)
+# BMI missing for 1753/50533 (3%) of cases.
+# Revise upper bound on percentage of complete cases to 97%
+# (At most 97% of cases had complete data for all analysis variables)
+data[which(data$study_ID == "Magnus 2021"), 
+     "complete_p"] <- 97
+
+# 201 Mitha 2020 
+data[which(data$study_ID == "Mitha 2020"), 
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# Maternal BMI missing for 8581/62499 (14%) of cases. 
+# Revise upper bound on percentage of complete cases to 86%
+data[which(data$study_ID == "Mitha 2020"),
+     "complete_p"] <- 86
+
+# 217 Nøst 2021   
+data[which(data$study_ID == "Nøst 2021"),
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# Sibling lung cancer missing for (393368+26506)/442115 (95%) of cases.
+# No changes made.
+
+# 233 PintoPereira 2020
+data[which(data$study_ID == "PintoPereira 2020"),
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# 1946-NSHD: obese vs not obese at 37: n = 2427
+# Smoking missing for 450/2427 (19%)
+# Revise upper bound on percentage of complete cases to 81%
+data[which(data$study_ID == "PintoPereira 2020"),
+     "complete_p"] <- 81
+
+# 250 Riddell 2021
+data[which(data$study_ID == "Riddell 2021"),
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# n = 1910 non-Latina black
+# Median household income missing for 94/1910 (5%)
+# Revise upper bound on percentage of complete cases to 95%
+data[which(data$study_ID == "Riddell 2021"),
+     "complete_p"] <- 95
+
+#  51 Cohen 2019 
+data[which(data$study_ID == "Cohen 2019"),
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# Sample for gestational age, n = 70,959
+# Complete case analysis for AD / GA, model 2, n = 60,632
+# Percentage of complete cases = 60632/70959 (85%)
+# Able to establish percentage of complete cases
+# Revise percentage of complete cases to 85%
+data[which(data$study_ID == "Cohen 2019"),
+     "complete_estab"] <- "Yes"
+data[which(data$study_ID == "Cohen 2019"),
+     "complete_p"] <- 85
+
 ## complete_p_estab -----
 data$complete_p_estab <- ifelse(data$complete_estab == "Yes", data$complete_p, NA)
 var_label(data$complete_p_estab) <- "% of complete cases"
@@ -359,6 +438,26 @@ var_label(data$exposure_miss) <- "Missing exposure data"
 ## exposure_miss_p ----
 data$exposure_miss_p <- gsub("%", "", data$exposure_miss_p)
 data$exposure_miss_p <- as.numeric(data$exposure_miss_p)
+
+# Double check strange exposure_miss_p
+
+# 121 Hamad 2019
+data[which(data$study_ID == "Hamad 2019"),
+     c("exposure_miss_p")]
+# n = 1279
+# WIC receipt (exposure) was observed for at most 1259/1279 (98%)
+# WIC reciept (exposure) missing for at least 2%
+# Revise percentage with missing exposure to 2%
+data[which(data$study_ID == "Hamad 2019"),
+     c("exposure_miss_p")] <- 2
+
+# 166 Lara 2020
+data[which(data$study_ID == "Lara 2020"),
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")] 
+# G-estimation
+# Model for effect of intervention on outcome estimated first
+# Screen time missing for 56% of individuals 
+# No changes made
 
 data$exposure_miss_p_estab <- ifelse(data$exposure_miss == "Yes", data$exposure_miss_p, NA)
 var_label(data$exposure_miss_p_estab) <- "% of missing values in exposure"
@@ -413,6 +512,21 @@ grep("<1", data$outcome_miss_p)
 data$outcome_miss_p[grep("<1", data$outcome_miss_p)] <- 1
 data$outcome_miss_p <- as.numeric(data$outcome_miss_p )
 
+# Double check strange outcome_miss_p
+
+# 64 Dekhtyar 2019
+data[which(data$study_ID == "Dekhtyar 2019"),
+     c("exposure_miss_p", "outcome_miss_p", "complete_p")]
+# Outcome was repeatedly measured at 3, 6 and 9 years
+# Assume baseline assessment included in mixed effects model
+# so all individuals had outcome measured for at least one 
+# time point.
+data[which(data$study_ID == "Dekhtyar 2019"),
+     "outcome_miss_p"] <- NA
+
+data[which(data$study_ID == "Dekhtyar 2019"),
+     "outcome_miss"] <- "Yes, but unable to establish the percentage of missing values"
+
 ## outcome_miss_p_estab ----
 data$outcome_miss_p_estab <- ifelse(data$outcome_miss == "Yes", data$outcome_miss_p, NA)
 var_label(data$outcome_miss_p_estab) <- "% of missing values in outcome"
@@ -452,6 +566,7 @@ data$multi_miss_ind[data$cov_ID %in% c(302, 301, 296, 280, 103, 229, 169, 19)] <
 # Check those without multivariable missingness
 flextable(data[data$multi_miss_ind == "No", c("cov_ID", "study_ID", "outcome_miss", "exposure_miss", "cov_miss", "multi_miss_ind")],
           cwidth = c(1, 2, 3, 3, 3, 3))
+
 
 # Missingness assumptions ======================================================
 
